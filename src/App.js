@@ -49,7 +49,10 @@ class App extends Component {
 
       await fetch(loginUrl + '?' + searchParams, requestOptions)
         .then(response => response.json())
-        .then(data => authMsg = data.result.authMsg);
+        .then(data => {
+          console.log(`login response === ${JSON.stringify(data)}`);
+          authMsg = data.result.authMsg;
+        });
 
       authMsg.domain.chainId = chainId;
       console.log(`authMsg === ${authMsg}`);
@@ -69,34 +72,36 @@ class App extends Component {
       // A jwt token will be returned in the result. Store this
       // in localStorage and set it as a header whenever making a request.
       // Refer to getAuthHeader function.
-      const postRequestOptions = {
+      const postAuthRequestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ signature, ethAddress, chainId })
       };
-      await fetch(loginUrl, postRequestOptions)
+
+
+      await fetch(protectedUrl, postAuthRequestOptions)
         .then(response => response.json())
         .then(data => {
-          localStorage.setItem('jwt', data.result.token);
-          console.log(`apiMember === ${JSON.stringify(data.result.apiMember)}`);
+          console.log(`successfully authed`);
+          console.log(`auth data === ${JSON.stringify(data)}`);
         });
 
 
-      const protectedOptions2 = {
-        method: 'GET',
-        headers: Object.assign(
-          { 'Content-Type': 'application/json' },
-          this.getAuthHeader()),  // setting JWT token in header
-      };
+      // const protectedOptions2 = {
+      //   method: 'GET',
+      //   headers: Object.assign(
+      //     { 'Content-Type': 'application/json' },
+      //     this.getAuthHeader()),  // setting JWT token in header
+      // };
 
-      // this request should succeed because we are providing a valid JWT token.
-      // to log the user out just delete the jwt token from localStorage.
-      await fetch(protectedUrl, protectedOptions2)
-        .then(response => response.json())
-        .then(data => {
-          console.log('successfully authenticated')
-          console.log(data)
-        });
+      // // this request should succeed because we are providing a valid JWT token.
+      // // to log the user out just delete the jwt token from localStorage.
+      // await fetch(protectedUrl, protectedOptions2)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     console.log('successfully authenticated')
+      //     console.log(data)
+      //   });
 
 
     } else if (window.web3) {
