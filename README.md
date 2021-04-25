@@ -3,10 +3,10 @@ MetaMask JWT token auth Proof of concept
 All relevant code is in my-app/src/App.js
 
 4 API calls are made on page load:
-* GET /api/secret (should fail)
-* GET /api/login
-* POST /api/login (authenticates user)
-* GET /api/secret (should succeed with JWT Authorization header set)
+* GET /api/auth/secret (should fail)
+* GET /api/auth/login
+* POST /api/auth/login (authenticates user)
+* GET /api/auth/secret (should succeed with JWT Authorization header set)
 
 ```
 my-app
