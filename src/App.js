@@ -19,8 +19,9 @@ class App extends Component {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
 
-      const loginUrl = 'http://localhost:8000/api/auth/login'
+      const loginUrl = 'http://localhost:8000/api/auth'
       const protectedUrl = 'http://localhost:8000/api/auth/secret';
+      const claimUrl = 'http://localhost:8000/api/profile/claim';
 
       const chainId = window.web3.currentProvider.networkVersion;
       const ethAddress = window.web3.utils.toChecksumAddress(
@@ -28,6 +29,8 @@ class App extends Component {
       );
 
       console.log(`ethAddress === ${ethAddress}`);
+      console.log(`chainId === ${chainId}`);
+      console.log(`typeof chainId === ${typeof chainId}`);
 
       //this request will fail because we are not authenticated
       const protectedOptions1 = {
@@ -72,14 +75,27 @@ class App extends Component {
       // A jwt token will be returned in the result. Store this
       // in localStorage and set it as a header whenever making a request.
       // Refer to getAuthHeader function.
+      // const postAuthRequestOptions = {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ signature, ethAddress, chainId })
+      // };
+
+
+      // await fetch(protectedUrl, postAuthRequestOptions)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     console.log(`successfully authed`);
+      //     console.log(`auth data === ${JSON.stringify(data)}`);
+      //   });
+
       const postAuthRequestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ signature, ethAddress, chainId })
       };
 
-
-      await fetch(protectedUrl, postAuthRequestOptions)
+      await fetch(claimUrl, postAuthRequestOptions)
         .then(response => response.json())
         .then(data => {
           console.log(`successfully authed`);
